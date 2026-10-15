@@ -1,0 +1,102 @@
+name: Spectra
+options:
+  bundleIdPrefix: com.utkarsh
+  deploymentTarget:
+    iOS: "27.0"
+  xcodeVersion: "27.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    # Verified in Xcode 27 Swift.xcspec: enables InferIsolatedConformances and
+    # NonisolatedNonsendingByDefault on top of the Swift 6 language mode.
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+targets:
+  Spectra:
+    type: application
+    platform: iOS
+    sources:
+      - path: Spectra
+        excludes:
+          - "**/*.md"
+    info:
+      path: Spectra/Info.plist
+      properties:
+        CFBundleDisplayName: Spectra
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSBluetoothAlwaysUsageDescription: "Spectra listens for nearby Bluetooth radios so it can show their signal strength live. Nothing is stored or sent."
+        NSLocationWhenInUseUsageDescription: "Spectra reads your location fix so it can show how precisely satellites are locating you and where true north is. Your location stays on this iPhone."
+        NSMotionUsageDescription: "Spectra reads the barometer so it can show air pressure and how the air bends radio waves. Readings stay on this iPhone."
+        NSCameraUsageDescription: "Spectra uses the camera as a light meter, and LiDAR and AR so it can time light's round trip and place waves in your room. Camera frames are never recorded or saved."
+        NSMicrophoneUsageDescription: "Spectra turns sound into a live Fourier spectrum so you can compare it with light and radio. Audio stays on this phone and is never recorded."
+        NSNearbyInteractionUsageDescription: "Spectra measures the distance to your other device with ultra wideband radio so it can show how the radio times its pulses. Nothing is stored or sent."
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIUserInterfaceStyle: Dark
+        CADisableMinimumFrameDurationOnPhone: true
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.education
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.utkarsh.spectra
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        SWIFT_STRICT_CONCURRENCY: complete
+        MTL_FAST_MATH: YES
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: NO
+  SpectraTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: SpectraTests
+        excludes:
+          - "Fixtures/**"
+          - "**/*.md"
+      - path: SpectraTests/Fixtures
+        buildPhase: resources
+        excludes:
+          - ".gitkeep"
+    dependencies:
+      - target: Spectra
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.utkarsh.spectra.tests
+  SpectraUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: SpectraUITests
+        excludes:
+          - "**/*.md"
+    dependencies:
+      - target: Spectra
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.utkarsh.spectra.uitests
+schemes:
+  Spectra:
+    build:
+      targets:
+        Spectra: all
+        SpectraTests: [test]
+        SpectraUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - SpectraTests
+        - SpectraUITests
